@@ -1,6 +1,7 @@
 # 5. Define a function that named find_element, this function takes a list and a number as parameters, and return the
 # index of the number in the list , otherwise return -1
 
+
 def find_element(nums, num):
     """
     This function finds the element in a list.
@@ -13,6 +14,10 @@ def find_element(nums, num):
     else:
         return -1
 
-print('_______________________________________\nExercise #5: Find_Element\n_____________________________________')
+print(
+    '_______________________________________\n'
+    'Exercise #5: Find_Element\n'
+    '_______________________________________')
+
 print(find_element([1,2,3,4], 4))
 print(find_element([1,2,3,4,5], 6))

@@ -3,6 +3,7 @@
 # for area, return the area of the square, if the letter is “p: for perimeter, return the perimeter of the square.
 # Print the result in the main function.
 
+
 def square(num, letter):
     """
     This function returns the square area or perimeter.
@@ -16,6 +17,11 @@ def square(num, letter):
         print("The perimeter of the square is:", num * 4)
 
 
-print('_______________________________________\nExercise #3: Square Function\n_____________________________________')
+print(
+    '_______________________________________\n'
+    'Exercise #3: Square Function'
+    '\n_____________________________________')
+
+
 square(7,"p")
 square(6, "a")

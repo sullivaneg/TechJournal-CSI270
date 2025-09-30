@@ -1,4 +1,6 @@
-def sum(a, b):
+
+
+def addition(a, b): # changed sum to addition to avoid shadowing a builtin function
     """
     This function calculate the sum of two numbers.
     :param a: first number
@@ -6,6 +8,7 @@ def sum(a, b):
     :return: sum of both numbers
     """
     return a + b
+
 
 def subtraction(a, b):
     """
@@ -16,6 +19,7 @@ def subtraction(a, b):
     """
     return a - b
 
+
 def multiplication(a, b):
     """
     This function calculate the product of two numbers.
@@ -25,6 +29,7 @@ def multiplication(a, b):
     """
     return a * b
 
+
 def division(a, b):
     """
     This function calculate the quotient of two numbers.
@@ -32,4 +37,8 @@ def division(a, b):
     :param b: second number
     :return: the quotient of both numbers
     """
-    return a / b
+    try:
+        quotient = a / b
+        return quotient
+    except ZeroDivisionError:
+        return "Undefined"

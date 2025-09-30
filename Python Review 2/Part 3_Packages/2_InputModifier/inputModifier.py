@@ -1,3 +1,7 @@
+# All of these function names aren't in snake case so they are PEP 8 violations
+# However the assignment specifies these names so I didn't change them
+
+
 def inputString(message):
     """
      this function is used to read a string value from the user and return that value.
@@ -19,5 +23,5 @@ def inputFloat(message):
     this function is used to read a float value from the user and return that value.
     :return:
     """
-    integer = float(input(message))
-    return integer
+    float_num = float(input(message))
+    return float_num

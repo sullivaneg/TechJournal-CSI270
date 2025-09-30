@@ -9,13 +9,17 @@
 # The IsSubset() function takes a list variable as a parameter.
 # The IsSubset() function prints if the entered list is subset of the x or not.
 
-def IsSubset(set, subset): # IsSubset is not PEP 8 approved but you told me to name it that
+
+def IsSubset(set, subset): # IsSubset is not PEP 8 approved name but the assignment told me to name it that
     """
     This function checks if one set is a subset of the other.
     :param set: large set
     :param subset: subset to check
     :return: print out if it's a subset or not
     """
+    set.sort()
+    subset.sort()
+
     count = 0
     for element in subset:
         if element in set:
@@ -28,7 +32,11 @@ def IsSubset(set, subset): # IsSubset is not PEP 8 approved but you told me to n
         print(f'{subset} is not a subset of {set}')
 
 
-print('_______________________________________\nFunctions and Lists\n_____________________________________')
+print(
+    '_______________________________________\n'
+    'Functions and Lists\n'
+    '_______________________________________')
+
 IsSubset(['a', 'b', 'c', 'd', 'e'], ['a', 'b', 'c'])
 IsSubset([1, 2, 3, 4, 5], [2, 3, 4])
 IsSubset([1, 2, 3, 4, 5], [6, 7, 8])

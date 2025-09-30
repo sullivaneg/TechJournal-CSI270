@@ -1,4 +1,6 @@
 from inputModifier import *
+
+
 def output(name, sum):
     """
     This function is just to store the print output
@@ -7,6 +9,7 @@ def output(name, sum):
     print("______________________________\nInput Modifier Test\n______________________________")
     print("Process Name: ", name)
     print("Sum of all consumed memory: ", sum)
+
 
 def main():
     """

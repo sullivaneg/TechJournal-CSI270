@@ -1,0 +1,79 @@
+import timeit
+import random
+# Import the Timer class defined in the module
+#from timeit import timeit2.Timer
+'''
+If the above line is excluded, you need to replace Timer with
+timeit.Timer when defining a Timer object
+'''
+
+def test1():
+    l = []
+    for i in range(1000):
+        l = l + [i]
+
+def test2():
+    l = []
+    for i in range(1000):
+        l.append(i)
+
+def test3():
+    l = [i for i in range(1000)]
+
+def test4():
+    l = list(range(1000))
+
+'''
+e the statement
+from __main__ import test1 imports the function test1 from the __main__ namespace
+into the namespace that timeit sets up for the timing experiment. The timeit module
+does this because it wants to run the timing tests in an environment that is uncluttered by any
+stray variables you may have created, that may interfere with your function’s performance in
+some unforeseen way.
+'''
+t1 = timeit.Timer("test1()", "from __main__ import test1")
+print("concat ",t1.timeit(number=1000), "milliseconds")
+
+t2 = timeit.Timer("test2()", "from __main__ import test2")
+print("append ",t2.timeit(number=1000), "milliseconds")
+
+t3 = timeit.Timer("test3()", "from __main__ import test3")
+print("comprehension ",t3.timeit(number=1000), "milliseconds")
+
+t4 = timeit.Timer("test4()", "from __main__ import test4")
+print("list range ",t4.timeit(number=1000), "milliseconds")
+
+#An analysis of the pop() on a list
+pop_zero = timeit.Timer("x.pop(0)",
+"from __main__ import x")
+pop_end = timeit.Timer("x.pop()",
+"from __main__ import x")
+x = list(range(2000000))
+pop_zero.timeit(number=1000)
+#4.8213560581207275
+x = list(range(2000000))
+pop_end.timeit(number=1000)
+#0.0003161430358886719
+'''
+pop_zero = timeit.Timer("x.pop(0)", "from __main__ import x")
+pop_end = timeit.Timer("x.pop()", "from __main__ import x")
+print("pop(0) pop()")
+for i in range(1000000,100000001,1000000):
+    x = list(range(i))
+    pt = pop_end.timeit(number=1000)
+for i in range(1000000,100000001,1000000):
+    x = list(range(i))
+    pz = pop_zero.timeit(number=1000)
+print("%15.5f, %15.5f" %(pz,pt))
+
+
+'''
+
+for i in range(10000,1000001,20000):
+    t = timeit.Timer("random.randrange(%d) in x"%i,
+    "from __main__ import random,x")
+    x = list(range(i))              #creates a list
+    lst_time = t.timeit(number=1000)
+    x = {j:None for j in range(i)} #creates a dictionary
+    d_time = t.timeit(number=1000)
+    print("%d,%10.3f,%10.3f" % (i, lst_time, d_time))

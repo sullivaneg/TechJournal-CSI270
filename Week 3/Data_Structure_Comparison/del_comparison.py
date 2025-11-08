@@ -89,8 +89,6 @@ def delete_time(lidi, idx):
 def copy_time(lidi):
     temp_structure = lidi.copy()
 
-
-# TODO: gen_data(df1, structure, i)
 def gen_data():
     """
     Main program: Runs timeit.timeit on our structure and adds data to the dataframe.

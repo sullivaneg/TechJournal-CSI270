@@ -70,8 +70,8 @@ the tree diagram below for fibonacci(5) (shortened to fib).
 ## Results / Analysis
 Generating the 100th number of the Fibonacci Sequence using a recursive function was unsuccessful. This is because 
 since the Fibonacci Sequence adds the two previous numbers, the recursive statement had two calls to the function. This 
-means that for every n the function runs n^2 times. This means that the time complexity of the function is O(2^n). This 
-makes reaching 100 virtually impossible.
+means that for every n the function runs 2^n operations. This means that the time complexity of the function is O(2^n). 
+This makes reaching 100 virtually impossible.
 
 ### Test
 I set up a test program that printed n, the nth Fibonacci number, and used timeit to time how long it took to run the
@@ -86,7 +86,7 @@ for n in range(101):
 
 Here's a graph of the first 42 numbers. The trendline on the graph of time it took to compute the nth 
 number and n was 5.67E-08e^0.485x which translates approximately to 1.63^x or 1.63^n. That means the time it would take 
-for my computer to calculate the 100th number recursively would be:<br>
+in theory for my computer to calculate the 100th number recursively would be:<br>
             1.63^100 = 1.65486E+21 Seconds<br>
             1.65486E+21/60 = 2.75809E+19 Minutes<br>
             2.75809E+19/60 = 4.59682E+17 Hours<br>
@@ -94,4 +94,5 @@ for my computer to calculate the 100th number recursively would be:<br>
             1.91534E+16/365 = 52475167492974 Years<br>
             52475167492974/1000 = 52475167493 Millennia<br>
 
+However, the computer would never finish n=100 due to stack overflow or too long of a runtime.
 ![Time it took to compute vs. n.png](graph.png)

@@ -123,7 +123,7 @@ def split_list(list_head):
 
     return left_head, right_head
 
-
+# def split_list_more():
 def _build_children(node):
     """
     Recursively build left and right children for a given TreeNode
@@ -307,33 +307,85 @@ def hybrid_algorithm(root, k, l):
         else:
             final.append(linked_list_to_list(node.list_head))
 
-        # Check
-        if verify_sum(root_values, final):
-            successful = check_partition(final, k, l)
-            if len(successful) == len(final):
-                return valid_depth, final
+    # Check
+    if verify_sum(root_values, final):
+        successful = check_partition(final, k, l)
+        if len(successful) == len(final):
+            return valid_depth, final
 
-        # If it doesn't work
-        return valid_depth, get_lists_at_depth(root, valid_depth)
+    # If it doesn't work
+    return valid_depth, get_lists_at_depth(root, valid_depth)
+
+def greedy_replace_node(node, k, l):
+    """Like the Hybrid algorithm but recursively replaces children"""
+    if can_replace(node, k, l):
+        left_partitions = greedy_replace_node(node.left, k, l)
+        right_partitions = greedy_replace_node(node.right, k, l)
+        return left_partitions + right_partitions
+    else:
+        return [linked_list_to_list(node.list_head)]
+
+def greedy_algorithm(root, k, l):
+    root_values = linked_list_to_list(root.list_head)
+
+    # Same as last algorithm: Start with valid depth
+    depth = get_tree_depth(root)-1
+    valid_depth = None
+
+    while depth >= 0:
+        partitions = get_lists_at_depth(root, depth)
+
+        if verify_sum(root_values, partitions):
+            successful = check_partition(partitions, k, l)
+            if len(successful) == len(partitions):
+                valid_depth = depth
+                break
+        depth -= 1
+    if valid_depth is None:
+        return None, []
+
+    # Get the nodes at a valid depth
+    nodes_at_depth = get_nodes_at_depth(root, valid_depth)
+
+    # Greedy replace each node
+    final = []
+    for node in nodes_at_depth:
+        expanded_partitions = greedy_replace_node(node, k, l)
+        final.extend(expanded_partitions)
+
+    # Verify Result
+    if verify_sum(root_values, final):
+        successful = check_partition(final, k, l)
+        if len(successful) == len(final):
+            return valid_depth, final
+
+    # If no replacing possible
+    return valid_depth, get_lists_at_depth(root, valid_depth)
 
 # ---------------------------------------------------------------------
 # Example usage (you can remove this part if you just want the structure)
 # ---------------------------------------------------------------------
 if __name__ == "__main__":
     # Root is a user-defined linked list
-    l = 3
+    l = 4
     k = 2
-    root_values = [6,6,6,6,6,6]  # you can change this
+    root_values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  # you can change this
     root = build_tree_from_list(root_values)
     depth, lists_at_depth = match_constraints(root)
     depth2, lists_at_depth2 = hybrid_algorithm(root, k, l)
+    depth3, lists_at_depth3 = greedy_algorithm(root, k, l)
+
     if lists_at_depth:
         print("Algorithm 1")
-        print("Constraints met at depth {}".format(depth))
+        print("Constraints met at depth {}. {} Partitions Created".format(depth, len(lists_at_depth)))
         print(lists_at_depth)
-        print("________________________\n Algorithm 2")
-        print("Constraints met at depth {}".format(depth2))
+        print("Algorithm 2")
+        print("Constraints met at depth {} then expanded. {} Partitions Created".format(depth2, len(lists_at_depth2)))
         print(lists_at_depth2)
+        print("Algorithm 3")
+        print("Constraints met at depth {}. {} Partitions Created".format(depth3, len(lists_at_depth3)))
+        print(lists_at_depth3)
+
 
     else:
         print("No Solution")
@@ -347,4 +399,3 @@ if __name__ == "__main__":
     #FILTER
     # If you reach a depth and it doesn't match the constraint, move up to the last level
     #print("Depth 2 lists:", lists_at_depth)
-

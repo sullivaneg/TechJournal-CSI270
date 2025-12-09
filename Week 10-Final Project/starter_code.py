@@ -1,6 +1,3 @@
-from pandas.io.formats.format import return_docstring
-
-
 class ListNode:
     """Singly linked list node."""
     def __init__(self, value, next=None):
@@ -203,36 +200,121 @@ def get_lists_at_depth(root, depth):
     dfs(root, 0)
     return result
 
-def add_lists(list1, list2):
-    return [a+b for a, b in zip(list1, list2)]
+def verify_sum(root_values, partitions):
+    if not partitions:
+        return False
+
+    sum_list = [0] * len(root_values)
+    for partition in partitions:
+        for i, num in enumerate(partition):
+            sum_list[i] += num
+
+    return sum_list == root_values
+
+def check_partition(partitions, k, l):
+    lst = []
+    for entry in partitions:
+        sum_constraint = sum(entry)
+        diversity_constraint = len([x for x in entry if x > 0])
+        if sum_constraint >= k and diversity_constraint >= l:
+            lst.append(entry)
+    return lst
+
 # Get Max Depth
 def match_constraints(root):
+    """ Finds the max depth where all partitions satisfy constraints"""
+    root_values = linked_list_to_list(root.list_head)
     depth = get_tree_depth(root)-1
+
     while depth >= 0:
         lists_at_depth = get_lists_at_depth(root, depth)
-        successful = []
-        sum_list = []
-        for lst in lists_at_depth:
-            for i in range(len(lst)):
-                sum_list[i] = sum_list[i] + lst[i]
-        if sum_list == root_values:
-            for entry in lists_at_depth:
-                sum_constraint = sum(entry)
-                diversity_constraint = [x for x in entry if x > 0]
-                if sum_constraint >= k:
-                    if len(diversity_constraint) >= l:
-                        successful.append(entry)
-            if successful:
+
+        if verify_sum(root_values, lists_at_depth):
+            successful = check_partition(lists_at_depth, k, l)
+            if len(successful) == len(lists_at_depth):
                 return depth, successful
-            else:
-                depth -= 1
-        else:
-            depth -= 1
-    if depth == 0:
-        return depth, get_lists_at_depth(root, depth)
-    if depth < 0:
+        depth -= 1
+    return None, []
+
+def get_nodes_at_depth(root, target_depth):
+    """Get the nodes instead of the lists at a specific depth"""
+    result = []
+
+    def dfs(node, depth):
+        """Recursive depth-first search"""
+        if node is None:
+            return
+        if depth == target_depth:
+            result.append(node)
+            return
+        dfs(node.left, depth+1)
+        dfs(node.right, depth+1)
+
+    dfs(root, 0)
+    return result
+
+def can_replace(node, k, l):
+    """Checks if both children are valid partitions"""
+    if not node.left or not node.right: # Need to have both children
+        return False
+    left_list = linked_list_to_list(node.left.list_head)
+    right_list = linked_list_to_list(node.right.list_head)
+
+    # Check if both children satisfy the constraints
+    left_sum = sum(left_list)
+    right_sum = sum(right_list)
+    left_diversity = len([x for x in left_list if x>0])
+    right_diversity = len([x for x in right_list if x>0])
+
+    return left_sum >= k and left_diversity >= l and right_sum >= k and right_diversity >= l
+
+def hybrid_algorithm(root, k, l):
+    """
+    I'm going to see if I can find the last level where everything matches and then by traversing down from the parent
+    node to the children, replace nodes with children if children both match the specifications. (NOTE: I MIGHT JUST BE
+    ABLE TO DO THIS)
+    """
+    root_values = linked_list_to_list(root.list_head)
+
+    # Find initial valid level
+    depth = get_tree_depth(root)-1
+    valid_depth = None
+
+    while depth >= 0:
+        partitions = get_lists_at_depth(root, depth)
+
+        if verify_sum(root_values, partitions):
+            successful = check_partition(partitions, k, l)
+            if len(successful) == len(partitions):
+                valid_depth = depth
+                break
+        depth -= 1
+
+    if valid_depth is None:
         return None, []
 
+    # Get nodes at valid depth
+    nodes_at_depth = get_nodes_at_depth(root, valid_depth)
+    final = []
+
+    for node in nodes_at_depth:
+        if can_replace(node, k, l):
+            # Substitute parent with both children
+            left_partition = linked_list_to_list(node.left.list_head)
+            right_partition = linked_list_to_list(node.right.list_head)
+            final.append(left_partition)
+            final.append(right_partition)
+        else:
+            final.append(linked_list_to_list(node.list_head))
+
+        # Check
+        if verify_sum(root_values, final):
+            successful = check_partition(final, k, l)
+            if len(successful) == len(final):
+                return valid_depth, final
+
+        # If it doesn't work
+        return valid_depth, get_lists_at_depth(root, valid_depth)
 
 # ---------------------------------------------------------------------
 # Example usage (you can remove this part if you just want the structure)
@@ -241,12 +323,18 @@ if __name__ == "__main__":
     # Root is a user-defined linked list
     l = 3
     k = 2
-    root_values = [5, 2, 7, 6, 12]  # you can change this
+    root_values = [6,6,6,6,6,6]  # you can change this
     root = build_tree_from_list(root_values)
     depth, lists_at_depth = match_constraints(root)
+    depth2, lists_at_depth2 = hybrid_algorithm(root, k, l)
     if lists_at_depth:
+        print("Algorithm 1")
         print("Constraints met at depth {}".format(depth))
         print(lists_at_depth)
+        print("________________________\n Algorithm 2")
+        print("Constraints met at depth {}".format(depth2))
+        print(lists_at_depth2)
+
     else:
         print("No Solution")
 
